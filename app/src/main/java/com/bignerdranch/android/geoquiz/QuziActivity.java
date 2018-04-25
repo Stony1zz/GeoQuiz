@@ -40,7 +40,8 @@ public class QuziActivity extends AppCompatActivity {
                  updateQuestion();
             }
         });
-        updateQuestion();
+        updateQuestion();//？为什么要有一次updaraQuestion的调用？？
+        //思考过后感觉应该是初始化屏幕变量在未点击按钮的时候第一次显示的东西是经过这次调用显示的
         mTrueButton=(Button)findViewById(R.id.ture_button);
         mTrueButton.setOnClickListener(new View.OnClickListener() {
             @Override
