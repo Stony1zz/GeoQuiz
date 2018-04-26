@@ -5,13 +5,15 @@ package com.bignerdranch.android.geoquiz;
         import android.view.Gravity;
         import android.view.View;
         import android.widget.Button;
+        import android.widget.ImageButton;
         import android.widget.TextView;
         import android.widget.Toast;
 
 public class QuziActivity extends AppCompatActivity {
     private Button mTrueButton;
     private Button mFalseButton;
-    private Button mNextButton;
+    private ImageButton mNextButton;
+    private ImageButton mLastButton;
     private TextView mQuestionTextView;
     private Question[] mQuestions=new Question[]{
       new Question(R.string.question_africa,true),
@@ -30,7 +32,7 @@ public class QuziActivity extends AppCompatActivity {
         mQuestionTextView =(TextView)findViewById(R.id.question_text_view);
 //        int question=mQuestions[mCurrentIndex].getTestResId();
 //        mQuestionTextView.setText(question);
-        mNextButton=(Button)findViewById(R.id.next_button);
+        mNextButton=(ImageButton)findViewById(R.id.next_button);
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -38,6 +40,19 @@ public class QuziActivity extends AppCompatActivity {
 //                int question =mQuestions[mCurrentIndex].getTestResId();
 //                mQuestionTextView.setText(question);点击调用
                  updateQuestion();
+            }
+        });
+        mLastButton=(ImageButton)findViewById(R.id.last_button);
+        mLastButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mCurrentIndex == 0){
+                mCurrentIndex=mQuestions.length-1;
+                updateQuestion();
+                }else {
+                    mCurrentIndex = (mCurrentIndex - 1) % mQuestions.length;
+                    updateQuestion();
+                }
             }
         });
         updateQuestion();//？为什么要有一次updaraQuestion的调用？？

@@ -11,4 +11,6 @@
     <string name="correct_toast">Correct</string>
     <string name="incorrect_toast">Incorrect</string>
     <string name="next_button">Next</string>
+    <string name="last_button">Last</string>
+    <string name="TOP">到头了</string>
 </resources>
