@@ -1,5 +1,7 @@
 package com.bignerdranch.android.geoquiz;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -16,10 +18,12 @@ public class QuziActivity extends AppCompatActivity {
     private Button mFalseButton;
     private ImageButton mNextButton;
     private ImageButton mLastButton;
+    private Button mCheatButton;
     private TextView mQuestionTextView;
     private static final String TAG="QuizActivity";
     private static final String KEY_INDEX="index";
     private static final String TRUE_INDEX="true_index";
+    private static final int REQUEST_CODE_CHEAT=0;
     private Question[] mQuestions=new Question[]{
       new Question(R.string.question_africa,true),
             new Question(R.string.question_oceans,true),
@@ -39,11 +43,24 @@ public class QuziActivity extends AppCompatActivity {
     };
     public  float i;
     private int mCurrentIndex=0;
+    private boolean mIsCheater;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG,"onCreate(Bundle)called");
         setContentView(R.layout.activity_quzi);
+        mCheatButton= findViewById(R.id.cheat_button);
+        mCheatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //start Cheatactivity
+                //Intent intent=new Intent(QuziActivity.this,CheatActivity.class);
+                boolean answerIsTrue =mQuestions[mCurrentIndex].isAnswerTrue();
+                Intent intent=CheatActivity.newIntent(QuziActivity.this,answerIsTrue);
+               // startActivity(intent);
+                startActivityForResult(intent,REQUEST_CODE_CHEAT);
+            }
+        });
         if (savedInstanceState !=null){
             mCurrentIndex=savedInstanceState.getInt(KEY_INDEX,0);
             i=savedInstanceState.getFloat(TRUE_INDEX,0);
@@ -74,6 +91,7 @@ public class QuziActivity extends AppCompatActivity {
                 }
             }
         });
+        mIsCheater=false;
         updateQuestion();//？为什么要有一次updaraQuestion的调用？？
         //思考过后感觉应该是初始化屏幕变量在未点击按钮的时候第一次显示的东西是经过这次调用显示的
         mTrueButton= findViewById(R.id.ture_button);
@@ -114,6 +132,17 @@ public class QuziActivity extends AppCompatActivity {
 
         });
 
+    }
+    @Override
+    protected void onActivityResult(int requestCode,int resultCode,Intent data){
+        if (resultCode != Activity.RESULT_OK){
+            return;
+        }if (requestCode ==REQUEST_CODE_CHEAT){
+            if (data==null){
+                return;
+            }
+            mIsCheater=CheatActivity.wasAnswerShown(data);
+        }
     }
     @Override
     protected void onStart(){
@@ -161,15 +190,19 @@ public class QuziActivity extends AppCompatActivity {
         float x=mCurrentIndex+1;
         NumberFormat mf=NumberFormat.getNumberInstance();
         mf.setMaximumIntegerDigits(3);
-        if(userPressedTrue == answerIsTrue){
-            messageResId =R.string.correct_toast;
-            i++;
-
+        if (mIsCheater){
+            messageResId=R.string.judement_toast;
         }else {
-            messageResId = R.string.incorrect_toast;
-        }
+            if (userPressedTrue == answerIsTrue) {
+                messageResId = R.string.correct_toast;
+                i++;
+
+            } else {
+                messageResId = R.string.incorrect_toast;
+            }
             m = (i / x) * 100;
+        }
         Toast.makeText(this, messageResId ,Toast.LENGTH_LONG).show();
-        Toast.makeText(this,  "正确率为："+mf.format(m)+"%"+i+mCurrentIndex,Toast.LENGTH_LONG).show();
+        Toast.makeText(this,  "正确率为："+mf.format(m)+"%",Toast.LENGTH_LONG).show();
     }
 }
