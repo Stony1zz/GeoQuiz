@@ -23,6 +23,7 @@ public class QuziActivity extends AppCompatActivity {
     private static final String TAG="QuizActivity";
     private static final String KEY_INDEX="index";
     private static final String TRUE_INDEX="true_index";
+    private static final String KET_WARNING="key_warning";
     private static final int REQUEST_CODE_CHEAT=0;
     private Question[] mQuestions=new Question[]{
       new Question(R.string.question_africa,true),
@@ -49,6 +50,11 @@ public class QuziActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Log.d(TAG,"onCreate(Bundle)called");
         setContentView(R.layout.activity_quzi);
+        if (savedInstanceState !=null){
+            mCurrentIndex=savedInstanceState.getInt(KEY_INDEX,0);
+            i=savedInstanceState.getFloat(TRUE_INDEX,0);
+            mIsCheater=savedInstanceState.getBoolean(KET_WARNING,false);
+        }
         mCheatButton= findViewById(R.id.cheat_button);
         mCheatButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,14 +63,10 @@ public class QuziActivity extends AppCompatActivity {
                 //Intent intent=new Intent(QuziActivity.this,CheatActivity.class);
                 boolean answerIsTrue =mQuestions[mCurrentIndex].isAnswerTrue();
                 Intent intent=CheatActivity.newIntent(QuziActivity.this,answerIsTrue);
-               // startActivity(intent);
+                // startActivity(intent);
                 startActivityForResult(intent,REQUEST_CODE_CHEAT);
             }
         });
-        if (savedInstanceState !=null){
-            mCurrentIndex=savedInstanceState.getInt(KEY_INDEX,0);
-            i=savedInstanceState.getFloat(TRUE_INDEX,0);
-        }
         mQuestionTextView = findViewById(R.id.question_text_view);
 //        int question=mQuestions[mCurrentIndex].getTestResId();
 //        mQuestionTextView.setText(question);
@@ -109,7 +111,6 @@ public class QuziActivity extends AppCompatActivity {
                             Toast.LENGTH_SHORT).show();
                 }else {
                     checkAnswer(true);
-                    mAnswers[mCurrentIndex].setIndex(1);
                 }
             }
         });
@@ -126,7 +127,6 @@ public class QuziActivity extends AppCompatActivity {
                             Toast.LENGTH_SHORT).show();
                 }else {
                     checkAnswer(false);
-                    mAnswers[mCurrentIndex].setIndex(1);
                 }
             }
 
@@ -166,6 +166,7 @@ public class QuziActivity extends AppCompatActivity {
         Log.i(TAG,"onSaveInsranceState");
         outState.putInt(KEY_INDEX,mCurrentIndex);
         outState.putFloat(TRUE_INDEX,i);
+        outState.putBoolean(KET_WARNING,mIsCheater);
     }
 
 
@@ -201,8 +202,9 @@ public class QuziActivity extends AppCompatActivity {
                 messageResId = R.string.incorrect_toast;
             }
             m = (i / x) * 100;
+            mAnswers[mCurrentIndex].setIndex(1);
+            Toast.makeText(this,  "正确率为："+mf.format(m)+"%",Toast.LENGTH_LONG).show();
         }
         Toast.makeText(this, messageResId ,Toast.LENGTH_LONG).show();
-        Toast.makeText(this,  "正确率为："+mf.format(m)+"%",Toast.LENGTH_LONG).show();
     }
 }
