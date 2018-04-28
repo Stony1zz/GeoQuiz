@@ -38,7 +38,7 @@ public class CheatActivity extends AppCompatActivity {
         mShowWarning= findViewById(R.id.warning);
         mAnswerTextView= findViewById(R.id.answer_text_view);
         if (savedInstanceState !=null){
-            KEY=savedInstanceState.getBoolean(TRUE_ANSWER,false);
+            KEY=savedInstanceState.getBoolean(TRUE_ANSWER,true);
           setAnswerShowResult(KEY);
         }
         mShowAnswerButoon= findViewById(R.id.show_answer_button);
@@ -77,7 +77,7 @@ public class CheatActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         Log.i(TAG,"onSaveInsranceState");
         outState.putBoolean(KEY_INDEX,true);
-        outState.putBoolean(TRUE_ANSWER,KEY);
+       outState.putBoolean(TRUE_ANSWER,KEY);
     }
 
 

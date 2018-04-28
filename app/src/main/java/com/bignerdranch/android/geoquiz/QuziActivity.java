@@ -25,6 +25,14 @@ public class QuziActivity extends AppCompatActivity {
     private static final String TRUE_INDEX="true_index";
     private static final String KET_WARNING="key_warning";
     private static final int REQUEST_CODE_CHEAT=0;
+    private Cheat[] mCheats=new  Cheat[]{
+            new Cheat(R.string.question_africa,0),
+            new Cheat(R.string.question_oceans,0),
+            new Cheat(R.string.question_mideast,0),
+            new Cheat(R.string.question_australia,0),
+            new Cheat(R.string.question_anericas,0),
+            new Cheat(R.string.question_asia,0)
+    };
     private Question[] mQuestions=new Question[]{
       new Question(R.string.question_africa,true),
             new Question(R.string.question_oceans,true),
@@ -77,6 +85,7 @@ public class QuziActivity extends AppCompatActivity {
                 mCurrentIndex =(mCurrentIndex+1)% mQuestions.length;
 //                int question =mQuestions[mCurrentIndex].getTestResId();
 //                mQuestionTextView.setText(question);点击调用
+                mIsCheater=false;
                  updateQuestion();
             }
         });
@@ -86,6 +95,7 @@ public class QuziActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(mCurrentIndex == 0){
                 mCurrentIndex=mQuestions.length-1;
+                    mIsCheater=false;
                 updateQuestion();
                 }else {
                     mCurrentIndex = (mCurrentIndex - 1) % mQuestions.length;
@@ -93,7 +103,7 @@ public class QuziActivity extends AppCompatActivity {
                 }
             }
         });
-        mIsCheater=false;
+        //mIsCheater=false;
         updateQuestion();//？为什么要有一次updaraQuestion的调用？？
         //思考过后感觉应该是初始化屏幕变量在未点击按钮的时候第一次显示的东西是经过这次调用显示的
         mTrueButton= findViewById(R.id.ture_button);
@@ -149,6 +159,7 @@ public class QuziActivity extends AppCompatActivity {
         super.onStart();
         Log.d(TAG,"onStart() called");
     }
+
     @Override
     protected void onResume(){
         super.onResume();
@@ -159,7 +170,6 @@ public class QuziActivity extends AppCompatActivity {
         super.onPause();
         Log.d(TAG,"onPause() called");
     }
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -168,8 +178,6 @@ public class QuziActivity extends AppCompatActivity {
         outState.putFloat(TRUE_INDEX,i);
         outState.putBoolean(KET_WARNING,mIsCheater);
     }
-
-
     @Override
     protected void onStop(){
         super.onStop();
