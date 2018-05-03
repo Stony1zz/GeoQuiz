@@ -25,6 +25,7 @@ public class QuziActivity extends AppCompatActivity {
     private static final String TRUE_INDEX="true_index";
     private static final String KET_WARNING="key_warning";
     private static final int REQUEST_CODE_CHEAT=0;
+    private static int cheatMath=0;
     private Cheat[] mCheats=new  Cheat[]{
             new Cheat(R.string.question_africa,0),
             new Cheat(R.string.question_oceans,0),
@@ -68,11 +69,15 @@ public class QuziActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //start Cheatactivity
+                if (cheatMath<=3){
                 //Intent intent=new Intent(QuziActivity.this,CheatActivity.class);
                 boolean answerIsTrue =mQuestions[mCurrentIndex].isAnswerTrue();
                 Intent intent=CheatActivity.newIntent(QuziActivity.this,answerIsTrue);
                 // startActivity(intent);
-                startActivityForResult(intent,REQUEST_CODE_CHEAT);
+                startActivityForResult(intent,REQUEST_CODE_CHEAT);}
+                else {
+                    Toast.makeText(QuziActivity.this,"作弊次数超过三次",Toast.LENGTH_LONG).show();
+                }
             }
         });
         mQuestionTextView = findViewById(R.id.question_text_view);
@@ -152,6 +157,7 @@ public class QuziActivity extends AppCompatActivity {
                 return;
             }
             mIsCheater=CheatActivity.wasAnswerShown(data);
+            mCheats[mCurrentIndex].setIndex(CheatActivity.wasCheatShown(data));
         }
     }
     @Override

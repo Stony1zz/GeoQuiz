@@ -16,15 +16,20 @@ public class CheatActivity extends AppCompatActivity {
     private static final String TRUE_ANSWER="true_answer";
     private static final String TAG="CheatActivity";
     private static final String KEY_INDEX="index";
+    private static final String CHAEAT_INDEX="cheat_index";
     private String text;
     private TextView mShowWarning;
     private TextView mAnswerTextView;
     private Button mShowAnswerButoon;
+    private int is_cheat;
     private boolean KEY;
     public static Intent newIntent(Context packageContext,boolean answerIsTrue){
         Intent intent=new Intent(packageContext,CheatActivity.class);
         intent.putExtra(EXTRA_ANSWER_IS_TRUE,answerIsTrue);
         return intent;
+    }
+    public static int wasCheatShown(Intent intent){
+        return intent.getIntExtra(CHAEAT_INDEX,1);
     }
     public static boolean wasAnswerShown(Intent intent){
         return intent.getBooleanExtra(EXTRA_ANSWER_IS_TRUE,false);
@@ -38,8 +43,9 @@ public class CheatActivity extends AppCompatActivity {
         mShowWarning= findViewById(R.id.warning);
         mAnswerTextView= findViewById(R.id.answer_text_view);
         if (savedInstanceState !=null){
+            is_cheat=savedInstanceState.getInt(CHAEAT_INDEX,1);
             KEY=savedInstanceState.getBoolean(TRUE_ANSWER,true);
-          setAnswerShowResult(KEY);
+          setAnswerShowResult(KEY,1);
         }
         mShowAnswerButoon= findViewById(R.id.show_answer_button);
         mShowAnswerButoon.setOnClickListener(new View.OnClickListener() {
@@ -51,7 +57,7 @@ public class CheatActivity extends AppCompatActivity {
                     mAnswerTextView.setText(R.string.false_button);
                 }
                 KEY=true;
-                setAnswerShowResult(true);
+                setAnswerShowResult(true,1);
             }
         });
 
@@ -78,6 +84,7 @@ public class CheatActivity extends AppCompatActivity {
         Log.i(TAG,"onSaveInsranceState");
         outState.putBoolean(KEY_INDEX,true);
        outState.putBoolean(TRUE_ANSWER,KEY);
+       outState.putInt(CHAEAT_INDEX,is_cheat);
     }
 
 
@@ -91,8 +98,9 @@ public class CheatActivity extends AppCompatActivity {
         super.onDestroy();
         Log.d(TAG,"onDestroy() called");
     }
-    private void setAnswerShowResult(boolean isAnswerShown){
+    private void setAnswerShowResult(boolean isAnswerShown,int is_cheat){
         Intent data=new Intent();
+        data.putExtra(CHAEAT_INDEX,is_cheat);
         data.putExtra(EXTRA_ANSWER_IS_TRUE,isAnswerShown);
         setResult(RESULT_OK,data);
     }
