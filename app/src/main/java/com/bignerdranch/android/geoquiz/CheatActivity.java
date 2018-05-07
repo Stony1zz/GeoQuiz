@@ -29,7 +29,7 @@ public class CheatActivity extends AppCompatActivity {
         return intent;
     }
     public static int wasCheatShown(Intent intent){
-        return intent.getIntExtra(CHAEAT_INDEX,1);
+        return intent.getIntExtra(CHAEAT_INDEX,0);
     }
     public static boolean wasAnswerShown(Intent intent){
         return intent.getBooleanExtra(EXTRA_ANSWER_IS_TRUE,false);

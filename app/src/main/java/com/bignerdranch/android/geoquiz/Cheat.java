@@ -6,7 +6,7 @@ package com.bignerdranch.android.geoquiz;
 
 public class Cheat {
     private int mTextResId;
-    private int mIndex;
+    public int mIndex;
     public Cheat(int textResId,int Index){
         mTextResId=textResId;
         mIndex=Index;

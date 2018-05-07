@@ -24,8 +24,9 @@ public class QuziActivity extends AppCompatActivity {
     private static final String KEY_INDEX="index";
     private static final String TRUE_INDEX="true_index";
     private static final String KET_WARNING="key_warning";
+    private static final String CHEAT_INDEX="cheat_index";
     private static final int REQUEST_CODE_CHEAT=0;
-    private static int cheatMath=0;
+    private static int CHATMATH=0;
     private Cheat[] mCheats=new  Cheat[]{
             new Cheat(R.string.question_africa,0),
             new Cheat(R.string.question_oceans,0),
@@ -63,17 +64,20 @@ public class QuziActivity extends AppCompatActivity {
             mCurrentIndex=savedInstanceState.getInt(KEY_INDEX,0);
             i=savedInstanceState.getFloat(TRUE_INDEX,0);
             mIsCheater=savedInstanceState.getBoolean(KET_WARNING,false);
+            mCheats[mCurrentIndex].mIndex=savedInstanceState.getInt(CHEAT_INDEX,0);
+
         }
         mCheatButton= findViewById(R.id.cheat_button);
         mCheatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //start Cheatactivity
-                if (cheatMath<=3){
+                if (CHATMATH<=2){
                 //Intent intent=new Intent(QuziActivity.this,CheatActivity.class);
                 boolean answerIsTrue =mQuestions[mCurrentIndex].isAnswerTrue();
                 Intent intent=CheatActivity.newIntent(QuziActivity.this,answerIsTrue);
                 // startActivity(intent);
+                    CHATMATH++;
                 startActivityForResult(intent,REQUEST_CODE_CHEAT);}
                 else {
                     Toast.makeText(QuziActivity.this,"作弊次数超过三次",Toast.LENGTH_LONG).show();
@@ -157,7 +161,7 @@ public class QuziActivity extends AppCompatActivity {
                 return;
             }
             mIsCheater=CheatActivity.wasAnswerShown(data);
-            mCheats[mCurrentIndex].setIndex(CheatActivity.wasCheatShown(data));
+            mCheats[mCurrentIndex].mIndex=CheatActivity.wasCheatShown(data);
         }
     }
     @Override
@@ -183,6 +187,7 @@ public class QuziActivity extends AppCompatActivity {
         outState.putInt(KEY_INDEX,mCurrentIndex);
         outState.putFloat(TRUE_INDEX,i);
         outState.putBoolean(KET_WARNING,mIsCheater);
+        outState.putInt(CHEAT_INDEX,mCheats[mCurrentIndex].mIndex);
     }
     @Override
     protected void onStop(){
@@ -205,7 +210,7 @@ public class QuziActivity extends AppCompatActivity {
         float x=mCurrentIndex+1;
         NumberFormat mf=NumberFormat.getNumberInstance();
         mf.setMaximumIntegerDigits(3);
-        if (mIsCheater){
+        if (mIsCheater==true||mCheats[mCurrentIndex].mIndex==1){
             messageResId=R.string.judement_toast;
         }else {
             if (userPressedTrue == answerIsTrue) {
